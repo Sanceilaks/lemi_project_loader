@@ -28,6 +28,8 @@ namespace loader_core
 	}
 
 	inline bool is_loading = false;
+	inline std::thread loading_thread;
+	inline bool should_cancel = false;
 	
 	inline bool load(const c_base_hack& h)
 	{
@@ -54,26 +56,52 @@ namespace loader_core
 
 		main_window::status = "Downloading";
 		
-		if (!download::download_to_file(h.get_download_url(), file_name, &main_window::progress_procentage))
+		if (!download::download_to_file(h.get_download_url(), file_name, &main_window::progress_procentage) || should_cancel)
+		{
+			should_cancel = false;
 			return false;
-
+		}
 		auto pid = inject::find_process_id(h.get_process_name());
 		if (pid == NULL)
 			main_window::status = "Waiting " + h.get_process_name();
 		
 		while (pid == NULL)
 		{
+			if (should_cancel)
+			{
+				should_cancel = false;
+				return false;
+			}
+			
 			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 			pid = inject::find_process_id(h.get_process_name());
 		}
 
+		if (should_cancel)
+		{
+			should_cancel = false;
+			return false;
+		}
+		
 		auto window_ready = inject::is_process_ready(pid);
 		if (!window_ready)
 			main_window::status = "Waiting for ready";
 		while (!window_ready)
 		{
+			if (should_cancel)
+			{
+				should_cancel = false;
+				return false;
+			}
+			
 			std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 			window_ready = inject::is_process_ready(pid);
+		}
+
+		if (should_cancel)
+		{
+			should_cancel = false;
+			return false;
 		}
 		
 		main_window::status = "Injecting";
@@ -82,6 +110,7 @@ namespace loader_core
 		ShellExecute(NULL, 0, "RunDll32.exe", "InetCpl.cpl,ClearMyTracksByProcess 8", 0, SW_HIDE);
 		main_window::status = res ? "Injected" : "Failed";
 		is_loading = false;
+		should_cancel = false;
 		return res;
 	}
 }

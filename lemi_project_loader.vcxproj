@@ -170,6 +170,7 @@
     <ClInclude Include="src\imgui\imstb_rectpack.h" />
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\imgui\im_tools.h" />
     <ClInclude Include="src\imgui\my_style.h" />
     <ClInclude Include="src\inject_staff\inject_staff.h" />
     <ClInclude Include="src\inject_staff\injections.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="src\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\imgui\im_tools.cpp" />
     <ClCompile Include="src\inject_staff\inject_staff.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\platform_folders.cpp" />

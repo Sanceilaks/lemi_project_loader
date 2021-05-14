@@ -1,16 +1,14 @@
-#define LEMI_LOADER_VERSION "3"
+#define LEMI_LOADER_VERSION "4"
 
 #include <Windows.h>
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx9.h"
 #include "imgui/imgui_impl_win32.h"
-#include "imgui/imgui_freetype.h"
 
 #include <d3d9.h>
 #include <tchar.h>
 #include <thread>
-#include <algorithm>
 
 #include "download.h"
 
@@ -42,7 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	};
 
 	RegisterClassEx(&wc);
-	auto hwnd = CreateWindow(wc.lpszClassName, "LemiProject Loader", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU, 100, 100, 600, 230, 0, 0, wc.hInstance, 0);
+	auto hwnd = CreateWindow(wc.lpszClassName, "LemiProject Loader", WS_OVERLAPPED | WS_MINIMIZEBOX | WS_SYSMENU, 100, 100, 650, 400, 0, 0, wc.hInstance, 0);
 	
 	
 	if (!CreateDeviceD3D(hwnd))
@@ -61,7 +59,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 
 	fonts::ubuntu = io.Fonts->AddFontFromMemoryCompressedTTF(ubuntu_font_compressed_data, ubuntu_font_compressed_size, 28.f, nullptr,
 		io.Fonts->GetGlyphRangesCyrillic());
-
+	fonts::ubuntu_big = io.Fonts->AddFontFromMemoryCompressedTTF(ubuntu_font_compressed_data, ubuntu_font_compressed_size, 48.f, nullptr,
+		io.Fonts->GetGlyphRangesCyrillic());
+	fonts::ubuntu_small = io.Fonts->AddFontFromMemoryCompressedTTF(ubuntu_font_compressed_data, ubuntu_font_compressed_size, 18.f, nullptr,
+		io.Fonts->GetGlyphRangesCyrillic());
+	
 	io.IniFilename = nullptr;
 
 	imgui_styles::std_dark_theme();
@@ -142,6 +144,7 @@ bool CreateDeviceD3D(HWND hWnd)
 	d3dpp.EnableAutoDepthStencil = TRUE;
 	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
 	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 	if (d3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &d3d_device) < 0)
 		return false;
 
