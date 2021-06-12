@@ -11,6 +11,7 @@
 #include <thread>
 
 #include "download.h"
+#include "file_tools.h"
 
 #include "imgui/my_style.h"
 
@@ -57,6 +58,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	ImGui::CreateContext();
 	auto& io = ImGui::GetIO();
 
+	file_tools::log_to_file("Init fonts");
 	fonts::ubuntu = io.Fonts->AddFontFromMemoryCompressedTTF(ubuntu_font_compressed_data, ubuntu_font_compressed_size, 28.f, nullptr,
 		io.Fonts->GetGlyphRangesCyrillic());
 	fonts::ubuntu_big = io.Fonts->AddFontFromMemoryCompressedTTF(ubuntu_font_compressed_data, ubuntu_font_compressed_size, 48.f, nullptr,
@@ -76,8 +78,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #ifndef DEBUG
 	std::thread([&]()
 		{
+			file_tools::log_to_file("Check version");
 			std::string version;
-			download::download_to_memory("https://raw.githubusercontent.com/Sanceilaks/LemiProject/main/loader_version", version, nullptr);
+			download::download_to_string(version, "https://raw.githubusercontent.com/Sanceilaks/LemiProject/main/loader_version");
 			if (!version._Starts_with(LEMI_LOADER_VERSION))
 			{
 				auto res = MessageBox(hwnd, "New version available", "Update", MB_OK);

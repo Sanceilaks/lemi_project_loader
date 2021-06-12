@@ -58,17 +58,32 @@ std::string file_tools::get_hack_directory()
 std::filesystem::path file_tools::get_hack_directory_path()
 {
 	auto documents = sago::getDocumentsFolder();
+	log_to_file(documents);
 	filesystem::path path(documents);
 	path.append("LemiProject");
-
-	if (!exist(path.generic_string()))
+	log_to_file(path.string());
+	if (!exist(path.string()))
 		create_directory(path);
 
 	auto data_path = path;
 	data_path.append("data");
-
-	if (!exist(data_path.generic_string()))
+	log_to_file(data_path.string());
+	
+	if (!exist(data_path.string()))
 		create_directory(data_path);
-
+	
+	log_to_file(path.string());
 	return path;
+}
+
+
+
+void file_tools::log_to_file(const std::string& text)
+{
+	static int lnum = 0;
+	std::ofstream s("logs", std::ios_base::app);
+	if (!lnum)
+		s << __TIMESTAMP__ << std::endl;
+	s << text << std::endl;
+	lnum++;
 }

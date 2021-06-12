@@ -55,9 +55,7 @@ std::vector<c_base_hack> hack_list::get_hacks()
 
 std::string hack_list::get_url_content()
 {
-	std::string s;
-	download::download_to_memory(uri, s, nullptr);
-	return s;
+	return download::download_to_string(uri);
 }
 
 c_base_hack hack_list::get_current_hack()

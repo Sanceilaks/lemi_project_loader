@@ -36,6 +36,8 @@ namespace loader_core
 		is_loading = true;
 		using load_fn = bool(const std::string&, const std::string&);
 		load_fn* fn = nullptr;
+
+		file_tools::log_to_file("Start loading");
 		
 		switch (h.get_inject_method())
 		{
@@ -49,12 +51,16 @@ namespace loader_core
 				fn = inject::nt_open_file::inject_dll;
 		}
 
+		file_tools::log_to_file("Trying to get hack path");
+		
 		auto file_name = h.get_name() + ".dll";
 		file_name = file_tools::get_hack_directory_path().append("data").append(file_name).string();
 
 		main_window::progress_procentage = 0.f;
 
 		main_window::status = "Downloading";
+
+		file_tools::log_to_file("Trying to download");
 		
 		if (!download::download_to_file(h.get_download_url(), file_name, &main_window::progress_procentage) || should_cancel)
 		{
